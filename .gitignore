@@ -2,3 +2,5 @@ configs.json
 virtualenv
 venv
 cogs/__pycache__
+.idea
+/__pycache__

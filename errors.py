@@ -11,6 +11,14 @@ class OnlyPrivateChannel(Exception):
         return f'The channel `{self.value}` is not a private channel'
 
 
+class WrongChannelType(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return f'{self.value} is not an available channel type'
+
+
 class NoUserVoiceFound(Exception):
     def __str__(self):
         return f'The user have to be connected to a voice channel'

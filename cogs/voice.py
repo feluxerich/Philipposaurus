@@ -47,21 +47,21 @@ class Voice(Cog):
                                 connect=True,
                                 mute_members=True,
                                 deafen_members=True,
-                                manage_channels=True,
+                                move_members=True,
                                 view_channel=True
                             )
                         }
                     )
                 )
         if before.channel:
-            if before.channel.name.startswith('Public Talk ') and len(before.channel.members) <= 0:
-                await before.channel.delete()
-            if before.channel.name.startswith('Private Talk ') and len(before.channel.members) <= 0:
+            if before.channel.name.startswith('Public Talk ') or before.channel.name.startswith('Private Talk ') \
+                    and len(before.channel.members) <= 0:
                 await before.channel.delete()
 
-    @command()
+    @command(aliases=['vi', 'invite'])
     @has_permissions(manage_channels=True)
     async def voice(self, ctx, member: Member):
+        """Invites a member to a private voice channel and gives him the required permissions"""
         if ctx.author.voice and ctx.author.voice.channel.name.startswith('Private Talk '):
             await ctx.author.voice.channel.set_permissions(
                 member,

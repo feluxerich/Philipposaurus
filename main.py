@@ -11,10 +11,13 @@ create_config()
 @client.event
 async def on_ready():
     print(f'Bot is now ready with ID: {client.user.id}')
+    for guild in client.guilds:
+        create_guild(str(guild.id))
 
 
 @client.command()
 async def reload(ctx):
+    """This Command reloads the bot"""
     successful = str()
     failed = str()
     for file in listdir('./cogs'):
@@ -30,6 +33,11 @@ async def reload(ctx):
     )
     # TODO: Do the successful and the failed cog imports in embed-fields when it's working again
     await ctx.send(embed=reload_embed, delete_after=10)
+
+
+@client.event
+async def on_guild_join(guild):
+    create_guild(str(guild.id))
 
 
 for file in listdir('./cogs'):

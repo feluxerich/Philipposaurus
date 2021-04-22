@@ -29,7 +29,6 @@ def create_config():
         "token": "",
         "presence": [],
         "guilds": {},
-        "commands": {}
     }
     if not isfile('./configs.json'):
         with open('configs.json', 'w') as file:
@@ -40,10 +39,32 @@ def create_config():
 def reset_guild(guild_id: str):
     data = return_config()
     default_guild = {
+        "rule": {},
+        "reactions": {},
         "channels": {
             "new_talk": None,
-            "new_private_talk": None
+            "new_private_talk": None,
+            "rules": None,
+            "roles": None
         }
     }
     data['guilds'][guild_id] = default_guild
     write_config(data)
+
+
+@is_config
+def create_guild(guild_id: str):
+    data = return_config()
+    default_guild = {
+        "rule": {},
+        "reactions": {},
+        "channels": {
+            "new_talk": None,
+            "new_private_talk": None,
+            "rules": None,
+            "roles": None
+        }
+    }
+    if guild_id not in data['guilds']:
+        data['guilds'][guild_id] = default_guild
+        write_config(data)
