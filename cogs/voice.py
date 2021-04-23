@@ -54,9 +54,9 @@ class Voice(Cog):
                     )
                 )
         if before.channel:
-            if before.channel.name.startswith('Public Talk ') or before.channel.name.startswith('Private Talk ') \
-                    and len(before.channel.members) <= 0:
-                await before.channel.delete()
+            if before.channel.name.startswith('Public Talk ') or before.channel.name.startswith('Private Talk '):
+                if len(before.channel.members) <= 0:
+                    await before.channel.delete()
 
     @command(aliases=['vi', 'invite'])
     @has_permissions(manage_channels=True)
