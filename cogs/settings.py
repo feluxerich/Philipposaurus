@@ -54,7 +54,8 @@ class Settings(Cog):
 
     @command()
     async def set_reactions(self, ctx, emoji: Emoji, role: Role, rule='false'):
-        """Add reactions to reaction role or to the rule"""
+        """Add reactions to reaction role or to the rule. The Parameter is a boolean (true/false)
+        and the default value is false"""
         data = return_config()
         data['guilds'][str(ctx.guild.id)]['rule' if rule.lower() == 'true' else 'reactions'][str(emoji)] = role.id
         write_config(data)
