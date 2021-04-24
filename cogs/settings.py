@@ -53,18 +53,28 @@ class Settings(Cog):
         await ctx.send(embed=set_channel_embed)
 
     @command()
-    async def set_reactions(self, ctx, emoji: Emoji, role: Role, rule='false'):
-        """Add reactions to reaction role or to the rule. The Parameter is a boolean (true/false)
+    async def set_reactions(self, ctx, operation, emoji, role: Role, rule: bool = False):
+        """Add or remove reactions to reaction role or to the rule. The Parameter is a boolean (True/False)
         and the default value is false"""
-        data = return_config()
-        data['guilds'][str(ctx.guild.id)]['rule' if rule.lower() == 'true' else 'reactions'][str(emoji)] = role.id
-        write_config(data)
+        reaction = ReactionRole(
+            guild=ctx.guild,
+            emoji=emoji,
+            role=role,
+            rule=rule
+        )
+        if operation.lower() == 'add':
+            reaction.add()
+        else:
+            reaction.remove()
         set_reaction_embed = Embed(
             title='Settings',
-            description=f'The {"rule" if rule.lower() == "true" else "role"}-reaction was set successfully',
+            description=f'The {"Rule" if rule else "Role"}-reaction was '
+                        f'{"set" if operation.lower() == "add" else "removed"} successfully',
             color=0x00ff00
         )
         await ctx.send(embed=set_reaction_embed)
+
+    # TODO: implement a list all reaction roles command
 
 
 def setup(client):
