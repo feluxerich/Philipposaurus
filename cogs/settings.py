@@ -59,6 +59,12 @@ class Settings(Cog):
         data = return_config()
         data['guilds'][str(ctx.guild.id)]['rule' if rule.lower() == 'true' else 'reactions'][str(emoji)] = role.id
         write_config(data)
+        set_reaction_embed = Embed(
+            title='Settings',
+            description=f'The {"rule" if rule.lower() == "true" else "role"}-reaction was set successfully',
+            color=0x00ff00
+        )
+        await ctx.send(embed=set_reaction_embed)
 
 
 def setup(client):

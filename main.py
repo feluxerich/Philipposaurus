@@ -40,6 +40,16 @@ async def on_guild_join(guild):
     create_guild(str(guild.id))
 
 
+@client.event
+async def on_command_error(ctx, error):
+    error_embed = Embed(
+        title='Error',
+        description=error,
+        color=0xff0000
+    )
+    await ctx.send(embed=error_embed)
+
+
 for file in listdir('./cogs'):
     if file.endswith('.py'):
         client.load_extension(f'cogs.{file[:-3]}')
