@@ -1,7 +1,8 @@
 from utils import *
 from discord.ext.commands import Bot, when_mentioned_or
 from os import listdir
-from discord import Embed, Intents
+from discord import Embed, Intents, Game, Status
+from asyncio import sleep
 
 client = Bot(command_prefix=when_mentioned_or('.'), intents=Intents.all())
 
@@ -13,6 +14,14 @@ async def on_ready():
     print(f'Bot is now ready with ID: {client.user.id}')
     for guild in client.guilds:
         create_guild(str(guild.id))
+    client.loop.create_task(status_task())
+
+
+async def status_task():
+    while True:
+        for status in return_config()['presence']:
+            await client.change_presence(activity=Game(status), status=Status.online)
+            await sleep(5)
 
 
 @client.command()
@@ -40,14 +49,14 @@ async def on_guild_join(guild):
     create_guild(str(guild.id))
 
 
-@client.event
-async def on_command_error(ctx, error):
-    error_embed = Embed(
-        title='Error',
-        description=error,
-        color=0xff0000
-    )
-    await ctx.send(embed=error_embed)
+# @client.event
+# async def on_command_error(ctx, error):
+#     error_embed = Embed(
+#         title='Error',
+#         description=error,
+#         color=0xff0000
+#     )
+#     await ctx.send(embed=error_embed)
 
 
 for file in listdir('./cogs'):
