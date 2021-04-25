@@ -19,7 +19,11 @@ async def on_ready():
 
 async def status_task():
     while True:
+        count = 0
+        for _ in client.guilds:
+            count += 1
         for status in return_config()['presence']:
+            status = status.replace('{servers}', str(count))
             await client.change_presence(activity=Game(status), status=Status.online)
             await sleep(5)
 
@@ -37,11 +41,11 @@ async def reload(ctx):
             failed += f'Not a python file: `{file}`'
     reload_embed = Embed(
         title='Reload',
-        description=f'**Successful**\n{successful}**Failed**\n{failed}',
         color=0x00ff00
     )
-    # TODO: Do the successful and the failed cog imports in embed-fields when it's working again
-    await ctx.send(embed=reload_embed, delete_after=10)
+    reload_embed.add_field(name='Successful', value=successful, inline=False)
+    reload_embed.add_field(name='Failed', value=failed, inline=False)
+    await ctx.send(embed=reload_embed)
 
 
 @client.event
