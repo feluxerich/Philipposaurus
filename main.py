@@ -75,11 +75,7 @@ async def reload(ctx):
     await ctx.send(embed=reload_embed)
 
 
-@client.event
-async def on_guild_join(guild):
-    create_guild(str(guild.id))
-
-
+# TODO: uncomment this error handler
 # @client.event
 # async def on_command_error(ctx, error):
 #     error_embed = Embed(
