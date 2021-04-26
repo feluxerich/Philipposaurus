@@ -60,6 +60,7 @@ def create_guild(guild_id: str):
     default_guild = {
         "rule": {},
         "reactions": {},
+        "on_join_role": None,
         "channels": {
             "new_talk": None,
             "new_private_talk": None,

@@ -58,9 +58,8 @@ class Voice(Cog):
                 if len(before.channel.members) <= 0:
                     await before.channel.delete()
 
-    @command(aliases=['vi', 'invite'])
+    @command(aliases=['vi', 'invite'], description='Invites a member to a private voice channel')
     async def voice(self, ctx, member: Member):
-        """Invites a member to a private voice channel and gives him the required permissions"""
         if ctx.author.voice and ctx.author.voice.channel.name.startswith('Private Talk '):
             await ctx.author.voice.channel.set_permissions(
                 member,

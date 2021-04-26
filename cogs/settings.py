@@ -8,21 +8,31 @@ class Settings(Cog):
     def __init__(self, client):
         self.client = client
 
-    @group()
+    @group(description='Set some channels or reactions for your server')
     @has_guild_permissions(manage_channels=True)
     async def set(self, ctx):
-        """Set some channels or reactions for your server"""
         if ctx.invoked_subcommand is None:
             settings_embed = Embed(
                 title='Settings',
-                description='voice | channel | reactions',
+                description='voice | channel | reactions | onjoin',
                 color=0x00ff00
             )
             await ctx.send(embed=settings_embed)
 
-    @set.group()
+    @set.command(description='Set the role which should be given to a new member')
+    async def onjoin(self, ctx, role: Role):
+        data = return_config()
+        data['guilds'][str(ctx.guild.id)]['on_join_role'] = role.id
+        write_config(data)
+        on_join_embed = Embed(
+            title='Settings',
+            description=f'On Member Join Role was set successful to {role.name}',
+            color=0x00ff00
+        )
+        await ctx.send(embed=on_join_embed)
+
+    @set.group(description='Join a channel you want to set then use a subcommand')
     async def voice(self, ctx):
-        """Join a channel you want to set then use a subcommand"""
         if ctx.invoked_subcommand is None:
             voice_embed = Embed(
                 title='Settings',
@@ -31,9 +41,8 @@ class Settings(Cog):
             )
             await ctx.send(embed=voice_embed)
 
-    @voice.command()
+    @voice.command(description='Set a channel to the new_talk channel')
     async def public(self, ctx):
-        """Set a channel to the new_talk channel"""
         if ctx_voice := ctx.author.voice:
             data = return_config()
             if str(ctx.guild.id) not in data['guilds']:
@@ -51,9 +60,8 @@ class Settings(Cog):
         )
         await ctx.send(embed=set_voice_embed)
 
-    @voice.command()
+    @voice.command(description='Set a channel to the new_private_talk channel')
     async def private(self, ctx):
-        """Set a channel to the new_private_talk channel"""
         if ctx_voice := ctx.author.voice:
             data = return_config()
             if str(ctx.guild.id) not in data['guilds']:
@@ -71,9 +79,8 @@ class Settings(Cog):
         )
         await ctx.send(embed=set_voice_embed)
 
-    @set.group()
+    @set.group(description='Set a channel to the rule or the role channel')
     async def text(self, ctx):
-        """Set a channel to the rule or the role channel"""
         if ctx.invoked_subcommand is None:
             set_channel_embed = Embed(
                 title='Settings',
@@ -82,9 +89,8 @@ class Settings(Cog):
             )
             await ctx.send(embed=set_channel_embed)
 
-    @text.command()
+    @text.command(description='Set the rule channel')
     async def rule(self, ctx, channel: TextChannel):
-        """Set the rule channel"""
         data = return_config()
         data['guilds'][str(ctx.guild.id)]['channels']['rules'] = channel.id
         write_config(data)
@@ -95,9 +101,8 @@ class Settings(Cog):
         )
         await ctx.send(embed=set_rule_embed)
 
-    @text.command()
+    @text.command(description='Set the self-role channel')
     async def role(self, ctx, channel: TextChannel):
-        """Set the self-role channel"""
         data = return_config()
         data['guilds'][str(ctx.guild.id)]['channels']['roles'] = channel.id
         write_config(data)
@@ -108,9 +113,8 @@ class Settings(Cog):
         )
         await ctx.send(embed=set_rule_embed)
 
-    @set.group()
+    @set.group(description='Add or remove reactions to reaction role')
     async def reaction(self, ctx):
-        """Add or remove reactions to reaction role"""
         if ctx.invoked_subcommand is None:
             set_reaction_embed = Embed(
                 title='Settings',
@@ -119,9 +123,8 @@ class Settings(Cog):
             )
             await ctx.send(embed=set_reaction_embed)
 
-    @reaction.group()
+    @reaction.group(description='Add reactions to rule or role')
     async def add(self, ctx):
-        """Add reactions to rule or role"""
         if ctx.invoked_subcommand is None:
             add_embed = Embed(
                 title='Settings',
@@ -130,9 +133,8 @@ class Settings(Cog):
             )
             await ctx.send(embed=add_embed)
 
-    @add.command()
+    @add.command(description='Add reaction rule')
     async def rule(self, ctx, emoji, role: Role):
-        """Add reaction rule"""
         reaction_role = ReactionRole(
             guild=ctx.guild,
             emoji=emoji,
@@ -147,9 +149,8 @@ class Settings(Cog):
         )
         await ctx.send(embed=rule_add_embed)
 
-    @add.command()
+    @add.command(description='Add reaction role')
     async def role(self, ctx, emoji, role: Role):
-        """Add reaction role"""
         reaction_role = ReactionRole(
             guild=ctx.guild,
             emoji=emoji,
@@ -164,9 +165,8 @@ class Settings(Cog):
         )
         await ctx.send(embed=role_add_embed)
 
-    @reaction.group()
+    @reaction.group(description='Remove reactions from rule or role')
     async def remove(self, ctx):
-        """Remove reactions from rule or role"""
         if ctx.invoked_subcommand is None:
             remove_embed = Embed(
                 title='Settings',
@@ -174,9 +174,8 @@ class Settings(Cog):
             )
             await ctx.send(embed=remove_embed)
 
-    @remove.command()
+    @remove.command(description='Remove a rule reaction')
     async def rule(self, ctx, emoji, role: Role):
-        """Remove a rule reaction"""
         reaction_role = ReactionRole(
             guild=ctx.guild,
             emoji=emoji,
@@ -191,9 +190,8 @@ class Settings(Cog):
         )
         await ctx.send(embed=rule_remove_embed)
 
-    @remove.command()
+    @remove.command(description='Remove a self-role reaction')
     async def role(self, ctx, emoji, role: Role):
-        """Remove a self-role reaction"""
         reaction_role = ReactionRole(
             guild=ctx.guild,
             emoji=emoji,

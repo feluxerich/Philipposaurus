@@ -4,7 +4,11 @@ from os import listdir
 from discord import Embed, Intents, Game, Status
 from asyncio import sleep
 
-client = Bot(command_prefix=when_mentioned_or('.'), intents=Intents.all())
+client = Bot(
+    command_prefix=when_mentioned_or('.'),
+    intents=Intents.all(),
+    help_command=None
+)
 
 create_config()
 
@@ -28,9 +32,28 @@ async def status_task():
             await sleep(5)
 
 
-@client.command()
+@client.command(name='help', aliases=['h', 'commands'])
+async def command_list(ctx):
+    cogs = [f'{cog}' for cog in client.cogs.keys()]
+    just_events = ['Reaction', 'Events']
+    for removable in just_events:
+        cogs.remove(removable)
+    help_embed = Embed(
+        title='Help',
+        color=0x00ffff
+    )
+    for cog in cogs:
+        commands = ""
+        for command in client.get_cog(cog).walk_commands():
+            commands += f'{command.name} - {command.description}\n'
+        help_embed.add_field(name=cog, value=str(commands), inline=False)
+    help_embed.add_field(name='No Category', value='help - Shows this help\nreload - Reloads the bot')
+    help_embed.set_footer(text=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+    await ctx.send(embed=help_embed)
+
+
+@client.command(description='Reloads the bot')
 async def reload(ctx):
-    """This Command reloads the bot"""
     successful = str()
     failed = str()
     for file in listdir('./cogs'):
