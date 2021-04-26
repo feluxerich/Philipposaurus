@@ -44,8 +44,12 @@ async def command_list(ctx):
     )
     for cog in cogs:
         commands = ""
-        for command in client.get_cog(cog).walk_commands():
+        for command in client.get_cog(cog).get_commands():
             commands += f'{command.name} - {command.description}\n'
+        # this version does not display the subcommands
+        # if you want to display them, do this:
+        # for command in client.get_cog(cog).walk_commands():
+        #   ...
         help_embed.add_field(name=cog, value=str(commands), inline=False)
     help_embed.add_field(name='No Category', value='help - Shows this help\nreload - Reloads the bot')
     help_embed.set_footer(text=ctx.author.display_name, icon_url=ctx.author.avatar_url)
