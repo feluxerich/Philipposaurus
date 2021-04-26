@@ -1,7 +1,7 @@
 from json import load, dump
 from errors import *
 from os.path import isfile
-from discord import Role, Emoji, Guild
+from discord import Role, Guild
 
 
 def is_config(function):
@@ -60,6 +60,7 @@ def create_guild(guild_id: str):
     default_guild = {
         "rule": {},
         "reactions": {},
+        "on_join_role": None,
         "channels": {
             "new_talk": None,
             "new_private_talk": None,
@@ -92,3 +93,5 @@ class ReactionRole:
         except KeyError:
             pass
         write_config(self.data)
+
+    # TODO: make a send_command function
