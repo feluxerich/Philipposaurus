@@ -47,10 +47,15 @@ class Minecraft(Cog):
             hypixel_stats_embed.add_field(
                 name='Last Advancements', value=advancements, inline=True
             )
-            hypixel_stats_embed.add_field(
-                name='Rank',
-                value=player['player']['newPackageRank'].replace('_', ' '), inline=True
-            )
+            try:
+                rank = player['player']['newPackageRank']
+                rank = rank.replace('_', ' ')
+                hypixel_stats_embed.add_field(
+                    name='Rank',
+                    value=rank, inline=True
+                )
+            except:
+                pass
             hypixel_stats_embed.add_field(
                 name='Most Played',
                 value=player['player']['mostRecentGameType'].capitalize(), inline=True
