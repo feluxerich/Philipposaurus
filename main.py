@@ -46,7 +46,11 @@ async def command_list(ctx, *, cog_or_command=None):
         for cog in cogs:
             commands = ""
             for command in client.get_cog(cog).get_commands():
-                commands += f'{command.name} - {command.description}\n'[:47] + '...'
+                help_command = f'{command.name} - {command.description}\n'
+                if len(help_command) >= 60:
+                    commands += f'{help_command[:57]}...\n'
+                else:
+                    commands += help_command
             # this version does not display the subcommands
             # if you want to display them, do this:
             # for command in client.get_cog(cog).walk_commands():
@@ -58,10 +62,10 @@ async def command_list(ctx, *, cog_or_command=None):
         if cog_or_command in client.cogs:
             commands = ''
             for command in client.get_cog(cog_or_command).get_commands():
-                commands += f'{command.name} - {command.description}\n'[:47] + '...'
+                commands += f'`{command.name}` - {command.description}\n'
             help_embed.add_field(name=cog_or_command, value=commands)
         elif command := client.get_command(cog_or_command):
-            command = f'{command.name} - {command.description}'
+            command = f'`{command.name}` - {command.description}'
             help_embed.add_field(name=cog_or_command.capitalize(), value=command)
         else:
             help_embed.add_field(name='Error', value='This is not a category or a command')
