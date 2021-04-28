@@ -30,6 +30,10 @@ def create_config():
     default_config = {
         "token": "",
         "presence": [],
+        "api_keys": {
+            "hypixel": "",
+            "osu": ""
+        },
         "guilds": {},
     }
     if not isfile('./configs.json'):

@@ -2,7 +2,6 @@ from discord.ext.commands import Cog, command
 from discord import Embed
 from requests import get
 from utils import *
-from json import dumps
 
 
 class Osu(Cog):
@@ -38,7 +37,6 @@ class Osu(Cog):
         )
         osu_stats_embed.set_thumbnail(url=f'http://s.ppy.sh/a/{osu_resp["user_id"]}')
         await ctx.send(embed=osu_stats_embed)
-        print(dumps(osu_resp, indent=4))
 
 
 def setup(client):

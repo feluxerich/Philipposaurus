@@ -3,6 +3,7 @@ from discord import Embed
 from requests import get
 from base64 import b64decode
 from utils import *
+from time import strftime, localtime
 
 
 class Minecraft(Cog):
@@ -34,42 +35,62 @@ class Minecraft(Cog):
                 "key": str(api_key),
                 "uuid": uuid['id']
             }
-
-            player = get('https://api.hypixel.net/player', params=params).json()
-            status = get('https://api.hypixel.net/status', params=params).json()
-            hypixel_stats_embed = Embed(
-                title='HyPixel',
-                color=0x00ff00
-            )
-            advancements = ""
-            for advancement in player['player']['achievementsOneTime'][-5:]:
-                advancements += f'{advancement.replace("_", " ").capitalize()}\n'
-            hypixel_stats_embed.add_field(
-                name='Last Advancements', value=advancements, inline=True
-            )
             try:
-                rank = player['player']['newPackageRank']
-                rank = rank.replace('_', ' ')
-                hypixel_stats_embed.add_field(
-                    name='Rank',
-                    value=rank, inline=True
+                player = get('https://api.hypixel.net/player', params=params).json()
+                status = get('https://api.hypixel.net/status', params=params).json()
+                hypixel_stats_embed = Embed(
+                    title='HyPixel',
+                    color=0x00ff00
                 )
+                advancements = ""
+                for advancement in player['player']['achievementsOneTime'][-5:]:
+                    advancements += f'{advancement.replace("_", " ").capitalize()}\n'
+                hypixel_stats_embed.add_field(
+                    name='Last Advancements', value=advancements, inline=True
+                )
+                try:
+                    rank = player['player']['newPackageRank']
+                    rank = rank.replace('_', ' ')
+                    hypixel_stats_embed.add_field(
+                        name='Rank',
+                        value=rank, inline=True
+                    )
+                except:
+                    pass
+                hypixel_stats_embed.add_field(
+                    name='Most Played',
+                    value=player['player']['mostRecentGameType'].capitalize(), inline=True
+                )
+                if status['session']['online'] is True:
+                    online = '🟢 Online'
+                else:
+                    online = '🔴 Offline'
+                hypixel_stats_embed.add_field(
+                    name='Status',
+                    value=online, inline=True
+                )
+                hypixel_stats_embed.set_thumbnail(url=f'https://mc-heads.net/avatar/{uuid["id"]}')
+                await ctx.send(embed=hypixel_stats_embed)
             except:
                 pass
-            hypixel_stats_embed.add_field(
-                name='Most Played',
-                value=player['player']['mostRecentGameType'].capitalize(), inline=True
+
+    @command()
+    async def name_history(self, ctx, *, mc_name):
+        uuid = get(f'https://api.mojang.com/users/profiles/minecraft/{mc_name}').json()
+        if uuid:
+            user = get(f'https://api.mojang.com/user/profiles/{uuid["id"]}/names').json()
+            names = ''
+            for name in user:
+                if not 'changedToAt' in name:
+                    names += f'**{name["name"]}** - created\n'
+                    continue
+                names += f'**{name["name"]}** - {strftime("%D %H:%M", localtime(int(name["changedToAt"])))}\n'
+            name_history_embed = Embed(
+                title='Minecraft Name History',
+                description=names,
+                color=0x00ff00
             )
-            if status['session']['online'] is True:
-                online = '🟢 Online'
-            else:
-                online = '🔴 Offline'
-            hypixel_stats_embed.add_field(
-                name='Status',
-                value=online, inline=True
-            )
-            hypixel_stats_embed.set_thumbnail(url=f'https://mc-heads.net/avatar/{uuid["id"]}')
-            await ctx.send(embed=hypixel_stats_embed)
+            await ctx.send(embed=name_history_embed)
 
 
 def setup(client):

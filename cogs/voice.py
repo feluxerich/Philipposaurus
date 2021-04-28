@@ -1,4 +1,4 @@
-from discord.ext.commands import Cog, command, has_permissions
+from discord.ext.commands import Cog, command
 from discord import PermissionOverwrite, Member
 from utils import *
 from errors import OnlyPrivateChannel
