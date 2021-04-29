@@ -92,14 +92,14 @@ async def reload(ctx):
     await ctx.send(embed=reload_embed)
 
 
-@client.event
-async def on_command_error(ctx, error):
-    error_embed = Embed(
-        title='Error',
-        description=str(error),
-        color=0xff0000
-    )
-    await ctx.send(embed=error_embed)
+# @client.event
+# async def on_command_error(ctx, error):
+#     error_embed = Embed(
+#         title='Error',
+#         description=str(error),
+#         color=0xff0000
+#     )
+#     await ctx.send(embed=error_embed)
 
 
 for file in listdir('./cogs'):

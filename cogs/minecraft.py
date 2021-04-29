@@ -34,18 +34,23 @@ class Minecraft(Cog):
                 "key": str(api_key),
                 "uuid": uuid['id']
             }
+            guild_params = {
+                "key": str(api_key),
+                "player": uuid['id']
+            }
             try:
                 player = get('https://api.hypixel.net/player', params=params).json()
                 status = get('https://api.hypixel.net/status', params=params).json()
+                recent = get('https://api.hypixel.net/recentgames', params=params).json()
+                guild = get('https://api.hypixel.net/guild', params=guild_params).json()
+                recent = recent['games'][0]['gameType'].capitalize()
+                achievement = player['player']['achievementsOneTime'][-1].replace('_', ' ').capitalize()
                 hypixel_stats_embed = Embed(
                     title='HyPixel',
                     color=colour()
                 )
-                advancements = ""
-                for advancement in player['player']['achievementsOneTime'][-5:]:
-                    advancements += f'{advancement.replace("_", " ").capitalize()}\n'
                 hypixel_stats_embed.add_field(
-                    name='Last Advancements', value=advancements, inline=True
+                    name='Last Advancements', value=achievement, inline=True
                 )
                 try:
                     rank = player['player']['newPackageRank']
@@ -54,7 +59,7 @@ class Minecraft(Cog):
                         name='Rank',
                         value=rank, inline=True
                     )
-                except:
+                except KeyError:
                     pass
                 hypixel_stats_embed.add_field(
                     name='Most Played',
@@ -68,10 +73,21 @@ class Minecraft(Cog):
                     name='Status',
                     value=online, inline=True
                 )
+                hypixel_stats_embed.add_field(
+                    name='Recently Played',
+                    value=recent, inline=True
+                )
+                try:
+                    hypixel_stats_embed.add_field(
+                        name='Guild',
+                        value=guild['guild']['name']
+                    )
+                except TypeError:
+                    pass
                 hypixel_stats_embed.set_thumbnail(url=f'https://mc-heads.net/avatar/{uuid["id"]}')
                 await ctx.send(embed=hypixel_stats_embed)
-            except:
-                pass
+            except Exception as e:
+                raise e
 
     @command(description='Gives the name history of an specific user')
     async def name_history(self, ctx, *, mc_name):

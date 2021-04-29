@@ -11,11 +11,16 @@ class Joke(Cog):
 
     @command(description='Sends a random Joke. After ten seconds there will appear the pointe')
     async def joke(self, ctx, joke_type=None):
-        joke = get('https://official-joke-api.appspot.com/jokes/random').json()
         joke_embed = Embed(
             title='Joke',
             color=colour()
         )
+        joke = None
+        joke_types = ['general', 'knock-knock', 'programming']
+        if joke_type and joke_type.lower() in joke_types:
+            joke = get(f'https://official-joke-api.appspot.com/jokes/{joke_type}/random')
+        if not joke_type:
+            joke = get('https://official-joke-api.appspot.com/jokes/random').json()
         joke_embed.description = joke['setup']
         sent_message = await ctx.send(embed=joke_embed)
         await sleep(10)
