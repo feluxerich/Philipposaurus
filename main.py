@@ -40,7 +40,7 @@ async def command_list(ctx, *, cog_or_command=None):
         cogs.remove(removable)
     help_embed = Embed(
         title='Help',
-        color=0x00ffff
+        color=colour()
     )
     if cog_or_command is None:
         for cog in cogs:
@@ -85,22 +85,21 @@ async def reload(ctx):
             failed += f'Not a python file: `{file}`'
     reload_embed = Embed(
         title='Reload',
-        color=0x00ff00
+        color=colour()
     )
     reload_embed.add_field(name='Successful', value=successful, inline=False)
     reload_embed.add_field(name='Failed', value=failed, inline=False)
     await ctx.send(embed=reload_embed)
 
 
-# TODO: uncomment this error handler
-# @client.event
-# async def on_command_error(ctx, error):
-#     error_embed = Embed(
-#         title='Error',
-#         description=error,
-#         color=0xff0000
-#     )
-#     await ctx.send(embed=error_embed)
+@client.event
+async def on_command_error(ctx, error):
+    error_embed = Embed(
+        title='Error',
+        description=str(error),
+        color=0xff0000
+    )
+    await ctx.send(embed=error_embed)
 
 
 for file in listdir('./cogs'):

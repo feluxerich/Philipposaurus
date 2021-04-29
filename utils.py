@@ -2,6 +2,7 @@ from json import load, dump
 from errors import *
 from os.path import isfile
 from discord import Role, Guild
+from random import choice
 
 
 def is_config(function):
@@ -99,3 +100,20 @@ class ReactionRole:
         write_config(self.data)
 
     # TODO: make a send_command function
+
+
+colours = [
+    0x0f4c75,
+    0x801336,
+    0x801336,
+    0x115173,
+    0x00454a,
+    0x581845,
+    0x45056e,
+    0x5a082d,
+    0x055e68
+]
+
+
+def colour():
+    return choice(colours)

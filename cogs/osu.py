@@ -14,7 +14,7 @@ class Osu(Cog):
         osu_resp = get(f'https://osu.ppy.sh/api/get_user?u={player_name}&k={self.data["api_keys"]["osu"]}').json()[0]
         osu_stats_embed = Embed(
             title='Osu Stats',
-            color=0x00ff00
+            color=colour()
         )
         osu_stats_embed.add_field(
             name='Playerdata',

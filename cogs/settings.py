@@ -15,7 +15,7 @@ class Settings(Cog):
             settings_embed = Embed(
                 title='Settings',
                 description='voice | channel | reactions | onjoin',
-                color=0x00ff00
+                color=colour()
             )
             await ctx.send(embed=settings_embed)
 
@@ -27,7 +27,7 @@ class Settings(Cog):
         on_join_embed = Embed(
             title='Settings',
             description=f'On Member Join Role was set successful to {role.name}',
-            color=0x00ff00
+            color=colour()
         )
         await ctx.send(embed=on_join_embed)
 
@@ -37,7 +37,7 @@ class Settings(Cog):
             voice_embed = Embed(
                 title='Settings',
                 description=f'public | private',
-                color=0x00ff00
+                color=colour()
             )
             await ctx.send(embed=voice_embed)
 
@@ -56,7 +56,7 @@ class Settings(Cog):
             title='Settings',
             description=f'The channel `{ctx_voice.channel.name}` '
                         f'was successfully set to the new-public-channel',
-            color=0x00ff00
+            color=colour()
         )
         await ctx.send(embed=set_voice_embed)
 
@@ -75,7 +75,7 @@ class Settings(Cog):
             title='Settings',
             description=f'The channel `{ctx_voice.channel.name}` '
                         f'was successfully set to the new-private-channel',
-            color=0x00ff00
+            color=colour()
         )
         await ctx.send(embed=set_voice_embed)
 
@@ -85,7 +85,7 @@ class Settings(Cog):
             set_channel_embed = Embed(
                 title='Settings',
                 description='rule | role',
-                color=0x00ff00
+                color=colour()
             )
             await ctx.send(embed=set_channel_embed)
 
@@ -97,7 +97,7 @@ class Settings(Cog):
         set_rule_embed = Embed(
             title='Settings',
             description=f'The channel `{channel.name}` was successfully set to the rule-Channel',
-            color=0x00ff00
+            color=colour()
         )
         await ctx.send(embed=set_rule_embed)
 
@@ -109,7 +109,7 @@ class Settings(Cog):
         set_rule_embed = Embed(
             title='Settings',
             description=f'The channel `{channel.name}` was successfully set to the rule-Channel',
-            color=0x00ff00
+            color=colour()
         )
         await ctx.send(embed=set_rule_embed)
 
@@ -119,7 +119,7 @@ class Settings(Cog):
             set_reaction_embed = Embed(
                 title='Settings',
                 description='add | remove',
-                color=0x00ff00
+                color=colour()
             )
             await ctx.send(embed=set_reaction_embed)
 
@@ -129,7 +129,7 @@ class Settings(Cog):
             add_embed = Embed(
                 title='Settings',
                 description='rule | role',
-                color=0x00ff00
+                color=colour()
             )
             await ctx.send(embed=add_embed)
 
@@ -145,7 +145,7 @@ class Settings(Cog):
         rule_add_embed = Embed(
             title='Settings',
             description=f'The reaction rule-reaction-role {role.mention} was added with emoji {emoji}',
-            color=0x00ff00
+            color=colour()
         )
         await ctx.send(embed=rule_add_embed)
 
@@ -161,7 +161,7 @@ class Settings(Cog):
         role_add_embed = Embed(
             title='Settings',
             description=f'The reaction role-reaction-role {role.mention} was added with emoji {emoji}',
-            color=0x00ff00
+            color=colour()
         )
         await ctx.send(embed=role_add_embed)
 
@@ -170,7 +170,8 @@ class Settings(Cog):
         if ctx.invoked_subcommand is None:
             remove_embed = Embed(
                 title='Settings',
-                description='rule | rule'
+                description='rule | rule',
+                color=colour()
             )
             await ctx.send(embed=remove_embed)
 
@@ -186,7 +187,7 @@ class Settings(Cog):
         rule_remove_embed = Embed(
             title='Settings',
             description=f'The reaction rule-reaction-role {role.mention} was removed from emoji {emoji}',
-            color=0x00ff00
+            color=colour()
         )
         await ctx.send(embed=rule_remove_embed)
 
@@ -202,7 +203,7 @@ class Settings(Cog):
         role_remove_embed = Embed(
             title='Settings',
             description=f'The reaction role-reaction-role {role.mention} was removed from emoji {emoji}',
-            color=0x00ff00
+            color=colour()
         )
         await ctx.send(embed=role_remove_embed)
 

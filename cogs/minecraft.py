@@ -3,7 +3,6 @@ from discord import Embed
 from requests import get
 from base64 import b64decode
 from utils import *
-from time import strftime, localtime
 
 
 class Minecraft(Cog):
@@ -21,7 +20,7 @@ class Minecraft(Cog):
             skin_grab_embed = Embed(
                 title='Skin-Grabber',
                 description=f'[The Skin]({skin})',
-                color=0x00ff00
+                color=colour()
             )
             skin_grab_embed.set_image(url=str(skin))
             await ctx.send(embed=skin_grab_embed)
@@ -40,7 +39,7 @@ class Minecraft(Cog):
                 status = get('https://api.hypixel.net/status', params=params).json()
                 hypixel_stats_embed = Embed(
                     title='HyPixel',
-                    color=0x00ff00
+                    color=colour()
                 )
                 advancements = ""
                 for advancement in player['player']['achievementsOneTime'][-5:]:
@@ -74,7 +73,7 @@ class Minecraft(Cog):
             except:
                 pass
 
-    @command()
+    @command(description='Gives the name history of an specific user')
     async def name_history(self, ctx, *, mc_name):
         uuid = get(f'https://api.mojang.com/users/profiles/minecraft/{mc_name}').json()
         if uuid:
@@ -84,11 +83,11 @@ class Minecraft(Cog):
                 if not 'changedToAt' in name:
                     names += f'**{name["name"]}** - created\n'
                     continue
-                names += f'**{name["name"]}** - {strftime("%D %H:%M", localtime(int(name["changedToAt"])))}\n'
+                names += f'**{name["name"]}**\n'
             name_history_embed = Embed(
                 title='Minecraft Name History',
                 description=names,
-                color=0x00ff00
+                color=colour()
             )
             await ctx.send(embed=name_history_embed)
 
