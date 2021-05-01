@@ -20,7 +20,17 @@ class Wolfram(Cog):
                                  'Your request will be timed out in 5 minutes'
         sent_message = await ctx.send(embed=wait_embed)
         resp = await self.client.wait_for('message', check=lambda msg: msg.author == ctx.author, timeout=600)
-        inpt = resp.content.replace(' ', '+')
+        keys = {
+            '+': 'plus',
+            '-': 'minus',
+            '**': '^',
+            '*': 'multi',
+            '/': 'div',
+            ' ': '+'
+        }
+        inpt = resp.content
+        for key in keys:
+            inpt = inpt.replace(key, keys[key])
         wait_embed.description = None
         url = f"https://api.wolframalpha.com/v2/result?appid={self.data['api_keys']['wolframalpha']}&i={inpt}%3F"
         async with ClientSession() as session:
