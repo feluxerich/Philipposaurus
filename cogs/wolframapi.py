@@ -1,7 +1,7 @@
 from discord.ext.commands import Cog, command
 from discord import Embed
 from utils import *
-from aiohttp import ClientSession
+from wolfram import AsyncApp
 
 
 class Wolfram(Cog):
@@ -20,29 +20,16 @@ class Wolfram(Cog):
                                  'Your request will be timed out in 5 minutes'
         sent_message = await ctx.send(embed=wait_embed)
         resp = await self.client.wait_for('message', check=lambda msg: msg.author == ctx.author, timeout=600)
-        keys = {
-            '+': 'plus',
-            '-': 'minus',
-            '**': '^',
-            '*': 'multi',
-            '/': 'div',
-            ' ': '+'
-        }
-        inpt = resp.content
-        for key in keys:
-            inpt = inpt.replace(key, keys[key])
-        wait_embed.description = None
-        url = f"https://api.wolframalpha.com/v2/result?appid={self.data['api_keys']['wolframalpha']}&i={inpt}%3F"
-        async with ClientSession() as session:
-            async with await session.get(url) as response:
-                output = await response.text()
+        app = AsyncApp(self.data['api_keys']['wolframalpha'])
+        result = await app.short(str(resp.content))
+        result = result.replace('{', '').replace('}', '').replace('->', ' = ')
         wait_embed.add_field(
             name='Input',
             value=resp.content, inline=False
         )
         wait_embed.add_field(
             name='Output',
-            value=output.replace('{', '').replace('}', '').replace('->', ' = '), inline=False
+            value=result, inline=False
         )
         await resp.delete()
         await sent_message.edit(embed=wait_embed)
