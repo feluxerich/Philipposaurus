@@ -1,8 +1,10 @@
 from discord.ext.commands import Cog, command
-from discord import Embed
+from discord import Embed, Member
 from requests import get
 from base64 import b64decode
 from utils import *
+from json import dumps
+from aiohttp import ClientSession
 
 
 class Minecraft(Cog):
@@ -41,9 +43,8 @@ class Minecraft(Cog):
             try:
                 player = get('https://api.hypixel.net/player', params=params).json()
                 status = get('https://api.hypixel.net/status', params=params).json()
-                recent = get('https://api.hypixel.net/recentgames', params=params).json()
+                recent = get('https://api.hypixel.net/recentgames', params=params).json()['games'][0]['gameType']
                 guild = get('https://api.hypixel.net/guild', params=guild_params).json()
-                recent = recent['games'][0]['gameType'].capitalize()
                 achievement = player['player']['achievementsOneTime'][-1].replace('_', ' ').capitalize()
                 hypixel_stats_embed = Embed(
                     title='HyPixel',
@@ -75,7 +76,7 @@ class Minecraft(Cog):
                 )
                 hypixel_stats_embed.add_field(
                     name='Recently Played',
-                    value=recent, inline=True
+                    value=recent.capitalize(), inline=True
                 )
                 try:
                     hypixel_stats_embed.add_field(
@@ -106,6 +107,54 @@ class Minecraft(Cog):
                 color=colour()
             )
             await ctx.send(embed=name_history_embed)
+
+    @command(description='Get the minecraft account of a discord account if this user linked his account with the bot')
+    async def get_minecraft(self, ctx, member: Member):
+        url = f'http://127.0.0.1:1337/accounts/discord/{int(member.id)}'
+        async with ClientSession() as session:
+            async with await session.get(url) as response:
+                output = await response.json()
+        get_minecraft_embed = Embed(
+            title='Bridge API',
+            color=colour()
+        )
+        get_minecraft_embed.add_field(
+            name='Discord',
+            value=f'ID: {output["discord"]["id"]}\nName: {output["discord"]["name"]}',
+            inline=True
+        )
+        get_minecraft_embed.add_field(
+            name='Minecraft',
+            value=f'ID: {output["minecraft"]["id"]}\nName: {output["minecraft"]["name"]}',
+            inline=True
+        )
+        get_minecraft_embed.set_thumbnail(url=member.avatar_url)
+        await ctx.send(embed=get_minecraft_embed)
+
+    @command(description='Get the minecraft account of a discord account if this user linked his account with the bot')
+    async def link_minecraft(self, ctx, *, mc_name):
+        url = f'http://127.0.0.1:1337/accounts'
+        uuid = f'https://api.mojang.com/users/profiles/minecraft/{mc_name}'
+        async with ClientSession() as session:
+            async with await session.get(uuid) as uuid_resp:
+                uuid_resp = await uuid_resp.json()
+                data = {
+                    "discord_id": ctx.author.id,
+                    "discord_name": ctx.author.name,
+                    "minecraft_id": uuid_resp["id"],
+                    "minecraft_name": uuid_resp["name"]
+                }
+            async with await session.post(url, json=data) as response:
+                output = await response.json()
+        get_minecraft_embed = Embed(
+            title='Bridge API',
+            color=colour()
+        )
+        get_minecraft_embed.add_field(
+            name='Response',
+            value=str(output['message'])
+        )
+        await ctx.send(embed=get_minecraft_embed)
 
 
 def setup(client):

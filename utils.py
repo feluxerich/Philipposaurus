@@ -3,6 +3,7 @@ from errors import *
 from os.path import isfile
 from discord import Role, Guild
 from random import choice
+from pydantic import BaseModel
 
 
 def is_config(function):
@@ -117,3 +118,15 @@ colours = [
 
 def colour():
     return choice(colours)
+
+
+def return_accounts():
+    with open('accounts.json') as file:
+        return load(file)
+
+
+class User(BaseModel):
+    discord_id: int
+    discord_name: str
+    minecraft_id: str
+    minecraft_name: str

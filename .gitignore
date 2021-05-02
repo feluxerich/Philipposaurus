@@ -4,3 +4,4 @@ venv
 cogs/__pycache__
 .idea
 /__pycache__
+accounts.json
