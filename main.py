@@ -4,8 +4,8 @@ from os import listdir
 from discord import Embed, Intents, Game, Status
 from asyncio import sleep, create_task
 from uvicorn import Server, Config
-from fastapi import FastAPI, Body
-from json import load, dump
+from fastapi import FastAPI
+from json import dump
 
 client = Bot(
     command_prefix=when_mentioned_or('.'),
@@ -85,7 +85,6 @@ async def from_minecraft_user(minecraft_uuid: str):
 @app.post('/accounts')
 async def register_user(user: User):
     accounts = return_accounts()
-    # if user['discord_id'] in [acc['discord']['id'] for acc in accounts['accounts']]:
     account = {
         'discord': {
             'id': user.discord_id,
@@ -96,7 +95,6 @@ async def register_user(user: User):
             'name': user.minecraft_name
         }
     }
-    # if user.discord_id in [acc['discord']['id'] for acc in accounts['accounts']]:
     for acc in accounts['accounts']:
         if acc['discord']['id'] == user.discord_id:
             return {
@@ -199,14 +197,14 @@ async def reload(ctx):
     await ctx.send(embed=reload_embed)
 
 
-# @client.event
-# async def on_command_error(ctx, error):
-#     error_embed = Embed(
-#         title='Error',
-#         description=str(error),
-#         color=0xff0000
-#     )
-#     await ctx.send(embed=error_embed)
+@client.event
+async def on_command_error(ctx, error):
+    error_embed = Embed(
+        title='Error',
+        description=str(error),
+        color=0xff0000
+    )
+    await ctx.send(embed=error_embed)
 
 
 for file in listdir('./cogs'):
