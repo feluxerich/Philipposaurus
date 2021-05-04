@@ -1,8 +1,40 @@
-version: "3.3"
+version: "3.7"
 services:
   philipposaurus:
     container_name: "philipposaurus"
+    hostname: main_bot
     build: .
     restart: always
+    depends_on:
+      - api
+      - database
+    tty: true
+  api:
+    container_name: "bridge-api"
+    hostname: api
+    image: bridge-api
+    restart: always
     ports:
-      - "1337:1337"
+      - 8000:8000
+    depends_on:
+      - database
+    tty: true
+  database:
+    container_name: "postgres_db"
+    hostname: postgres_database
+    image: postgres
+    restart: always
+    environment:
+      - 'POSTGRES_USER=philipposaurus'
+      - 'POSTGRES_PASSWORD=philipposaurus'
+      - 'POSTGRES_DB=database'
+    volumes:
+      - './database/transfer:/transfer'
+      - './database/data:/var/lib/postgresql/data'
+    tty: true
+    ports:
+      - 5432:5432
+networks:
+  default:
+    external:
+      name: main
