@@ -10,13 +10,13 @@ class Wolfram(Cog):
         self.data = return_config()
 
     @command(aliases=['wolfram', 'alpha', 'calc', 'calculate'], description='Send a request for example to calculate '
-                                                                            'something with the Wolframalpha API')
+                                                                            'something with the Wolframalpha api')
     async def wolf(self, ctx):
         wait_embed = Embed(
             title='Wolfram ALPHA',
             color=colour()
         )
-        wait_embed.description = 'Please type what you want to get from the API. ' \
+        wait_embed.description = 'Please type what you want to get from the api. ' \
                                  'Your request will be timed out in 5 minutes'
         sent_message = await ctx.send(embed=wait_embed)
         resp = await self.client.wait_for('message', check=lambda msg: msg.author == ctx.author, timeout=600)

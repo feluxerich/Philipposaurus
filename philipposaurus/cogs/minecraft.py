@@ -3,7 +3,6 @@ from discord import Embed, Member
 from requests import get
 from base64 import b64decode
 from utils import *
-from json import dumps
 from aiohttp import ClientSession
 
 
@@ -110,12 +109,12 @@ class Minecraft(Cog):
 
     @command(description='Get the minecraft account of a discord account if this user linked his account with the bot')
     async def get_minecraft(self, ctx, member: Member):
-        url = f'http://127.0.0.1:1337/accounts/discord/{int(member.id)}'
+        url = f'{self.data["api_keys"]["bridge_api"]}/accounts/discord/{int(member.id)}'
         async with ClientSession() as session:
             async with await session.get(url) as response:
                 output = await response.json()
         get_minecraft_embed = Embed(
-            title='Bridge API',
+            title='Bridge api',
             color=colour()
         )
         get_minecraft_embed.add_field(
@@ -133,7 +132,7 @@ class Minecraft(Cog):
 
     @command(description='Get the minecraft account of a discord account if this user linked his account with the bot')
     async def link_minecraft(self, ctx, *, mc_name):
-        url = f'http://127.0.0.1:1337/accounts'
+        url = f'{self.data["api_keys"]["bridge_api"]}/accounts'
         uuid = f'https://api.mojang.com/users/profiles/minecraft/{mc_name}'
         async with ClientSession() as session:
             async with await session.get(uuid) as uuid_resp:
@@ -147,7 +146,7 @@ class Minecraft(Cog):
             async with await session.post(url, json=data) as response:
                 output = await response.json()
         get_minecraft_embed = Embed(
-            title='Bridge API',
+            title='Bridge api',
             color=colour()
         )
         get_minecraft_embed.add_field(
