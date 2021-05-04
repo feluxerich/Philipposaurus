@@ -2,10 +2,7 @@ from utils import *
 from discord.ext.commands import Bot, when_mentioned_or
 from os import listdir
 from discord import Embed, Intents, Game, Status
-from asyncio import sleep, create_task
-from uvicorn import Server, Config
-from fastapi import FastAPI
-from json import dump
+from asyncio import sleep
 
 client = Bot(
     command_prefix=when_mentioned_or('.'),
@@ -13,114 +10,14 @@ client = Bot(
     help_command=None
 )
 
-app = FastAPI(
-    title='Minecraft_Discord_Bridge',
-    description='Minecraft_Discord_Bridge',
-    version="0.0.1"
-)
-
 create_config()
 
 data = return_config()
 
 
-@app.on_event('startup')
-async def startup_event():
-    print('Bridge API is ready')
-
-
-@app.get('/')
-async def home():
-    return {
-        "online": True,
-        "message": "This is the Bridge-API for Minecraft and Discord"
-    }
-
-
-@app.get('/accounts/discord/{discord_user_id}')
-async def from_discord_user(discord_user_id: int):
-    accounts = return_accounts()
-    for account in accounts['accounts']:
-        if account['discord']['id'] == discord_user_id:
-            return {
-                "discord": {
-                    "id": account['discord']['id'],
-                    "name": account['discord']['name']
-                },
-                "minecraft": {
-                    "id": account['minecraft']['id'],
-                    "name": account['minecraft']['name']
-                }
-            }
-        else:
-            continue
-    return {
-        "error": "User not found"
-    }
-
-
-@app.get('/accounts/minecraft/{minecraft_uuid}')
-async def from_minecraft_user(minecraft_uuid: str):
-    accounts = return_accounts()
-    for account in accounts['accounts']:
-        if account['minecraft']['id'] == minecraft_uuid:
-            return {
-                "minecraft": {
-                    "id": account['minecraft']['id'],
-                    "name": account['minecraft']['name']
-                },
-                "discord": {
-                    "id": account['discord']['id'],
-                    "name": account['discord']['name']
-                }
-            }
-        else:
-            continue
-    return {
-        "status_code": 404,
-        "reason": "User not found"
-    }
-
-
-@app.post('/accounts')
-async def register_user(user: User):
-    accounts = return_accounts()
-    account = {
-        'discord': {
-            'id': user.discord_id,
-            'name': user.discord_name
-        },
-        'minecraft': {
-            'id': user.minecraft_id,
-            'name': user.minecraft_name
-        }
-    }
-    for acc in accounts['accounts']:
-        if acc['discord']['id'] == user.discord_id:
-            return {
-                'message': 'User already registered'
-            }
-        continue
-    accounts['accounts'].append(account)
-    with open('accounts.json', 'w') as accounts_file:
-        dump(accounts, accounts_file, indent=4)
-    return {
-        'message': 'User was successful registered'
-    }
-
-
 @client.event
 async def on_ready():
     print(f'Bot is now ready with ID: {client.user.id}')
-    config = Config(
-        app=app,
-        loop=client.loop,
-        host='0.0.0.0',
-        port=1337
-    )
-    server = Server(config)
-    server.install_signal_handlers = lambda: None
-    create_task(server.serve())
     for guild in client.guilds:
         create_guild(str(guild.id))
     client.loop.create_task(status_task())
