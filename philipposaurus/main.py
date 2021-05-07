@@ -12,6 +12,8 @@ client = Bot(
 
 create_config()
 
+data = return_config()
+
 
 @client.event
 async def on_ready():
@@ -33,21 +35,42 @@ async def status_task():
 
 
 @client.command(name='help', aliases=['h', 'commands'])
-async def command_list(ctx):
+async def command_list(ctx, *, cog_or_command=None):
     cogs = [f'{cog}' for cog in client.cogs.keys()]
     just_events = ['Reaction', 'Events']
     for removable in just_events:
         cogs.remove(removable)
     help_embed = Embed(
         title='Help',
-        color=0x00ffff
+        color=colour()
     )
-    for cog in cogs:
-        commands = ""
-        for command in client.get_cog(cog).walk_commands():
-            commands += f'{command.name} - {command.description}\n'
-        help_embed.add_field(name=cog, value=str(commands), inline=False)
-    help_embed.add_field(name='No Category', value='help - Shows this help\nreload - Reloads the bot')
+    if cog_or_command is None:
+        for cog in cogs:
+            commands = ""
+            for command in client.get_cog(cog).get_commands():
+                help_command = f'{command.name} - {command.description}\n'
+                if len(help_command) >= 60:
+                    commands += f'{help_command[:57]}...\n'
+                else:
+                    commands += help_command
+            # this version does not display the subcommands
+            # if you want to display them, do this:
+            # for command in client.get_cog(cog).walk_commands():
+            #   ...
+            help_embed.add_field(name=cog, value=str(commands), inline=False)
+        help_embed.add_field(name='No Category', value='help - Shows this help\nreload - Reloads the bot\n\n'
+                                                       'Type `help <cog | command>` for specificated help')
+    else:
+        if cog_or_command in client.cogs:
+            commands = ''
+            for command in client.get_cog(cog_or_command).get_commands():
+                commands += f'`{command.name}` - {command.description}\n'
+            help_embed.add_field(name=cog_or_command, value=commands)
+        elif command := client.get_command(cog_or_command):
+            command = f'`{command.name}` - {command.description}'
+            help_embed.add_field(name=cog_or_command.capitalize(), value=command)
+        else:
+            help_embed.add_field(name='Error', value='This is not a category or a command')
     help_embed.set_footer(text=ctx.author.display_name, icon_url=ctx.author.avatar_url)
     await ctx.send(embed=help_embed)
 
@@ -64,7 +87,7 @@ async def reload(ctx):
             failed += f'Not a python file: `{file}`'
     reload_embed = Embed(
         title='Reload',
-        color=0x00ff00
+        color=colour()
     )
     reload_embed.add_field(name='Successful', value=successful, inline=False)
     reload_embed.add_field(name='Failed', value=failed, inline=False)
@@ -72,18 +95,13 @@ async def reload(ctx):
 
 
 @client.event
-async def on_guild_join(guild):
-    create_guild(str(guild.id))
-
-
-# @client.event
-# async def on_command_error(ctx, error):
-#     error_embed = Embed(
-#         title='Error',
-#         description=error,
-#         color=0xff0000
-#     )
-#     await ctx.send(embed=error_embed)
+async def on_command_error(ctx, error):
+    error_embed = Embed(
+        title='Error',
+        description=str(error),
+        color=0xff0000
+    )
+    await ctx.send(embed=error_embed)
 
 
 for file in listdir('./cogs'):
@@ -93,4 +111,5 @@ for file in listdir('./cogs'):
     else:
         print(f'Not a python file: {file}')
 
-client.run(return_config()['token'])
+if __name__ == '__main__':
+    client.run(data['token'])

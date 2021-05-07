@@ -1,0 +1,9 @@
+discord~=1.0.1
+requests~=2.22.0
+aiohttp~=3.7.4.post0
+pydantic~=1.8.1
+wolframalpha.py
+fastapi~=0.63.0
+uvicorn~=0.13.4
+psycopg2-binary
+SQLAlchemy~=1.4.11

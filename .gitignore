@@ -1,6 +1,9 @@
-configs.json
+philipposaurus/configs.json
 virtualenv
 venv
-cogs/__pycache__
+philipposaurus/cogs/__pycache__
 .idea
 /__pycache__
+todo.txt
+/database
+/api/configs.json

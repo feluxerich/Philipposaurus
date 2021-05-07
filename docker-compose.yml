@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  philipposaurus:
+    container_name: philipposaurus
+    hostname: main_bot
+    build: .
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - database
+  api:
+    container_name: bridge-api
+    hostname: api
+    image: bridge-api
+    restart: always
+    ports:
+      - 8000:8000
+    networks:
+      - database
+networks:
+  default:
+    external:
+      name: main
+  database:
+    external:
+      name: database
