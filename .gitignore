@@ -4,7 +4,6 @@ venv
 philipposaurus/cogs/__pycache__
 .idea
 /__pycache__
-philipposaurus/accounts.json
 todo.txt
 /database
 /api/configs.json

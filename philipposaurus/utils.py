@@ -33,8 +33,11 @@ def create_config():
         "presence": [],
         "api_keys": {
             "hypixel": "",
-            "osu": ""
+            "osu": "",
+            "wolframalpha": "",
+            "bridge_api": ""
         },
+        "database": {},
         "guilds": {},
     }
     if not isfile('./configs.json'):
