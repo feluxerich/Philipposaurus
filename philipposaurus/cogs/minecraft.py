@@ -107,28 +107,28 @@ class Minecraft(Cog):
             )
             await ctx.send(embed=name_history_embed)
 
-    @command(description='Get the minecraft account of a discord account if this user linked his account with the bot')
-    async def get_minecraft(self, ctx, member: Member):
-        url = f'{self.data["api_keys"]["bridge_api"]}/accounts/discord/{int(member.id)}'
-        async with ClientSession() as session:
-            async with await session.get(url) as response:
-                output = await response.json()
-        get_minecraft_embed = Embed(
-            title='Bridge api',
-            color=colour()
-        )
-        get_minecraft_embed.add_field(
-            name='Discord',
-            value=f'ID: {output["discord"]["id"]}\nName: {output["discord"]["name"]}',
-            inline=True
-        )
-        get_minecraft_embed.add_field(
-            name='Minecraft',
-            value=f'ID: {output["minecraft"]["id"]}\nName: {output["minecraft"]["name"]}',
-            inline=True
-        )
-        get_minecraft_embed.set_thumbnail(url=member.avatar_url)
-        await ctx.send(embed=get_minecraft_embed)
+    # @command(description='Get the minecraft account of a discord user')
+    # async def get_minecraft(self, ctx, member: Member):
+    #     url = f'{self.data["api_keys"]["bridge_api"]}/accounts/discord/{int(member.id)}'
+    #     async with ClientSession() as session:
+    #         async with await session.get(url) as response:
+    #             output = await response.json()
+    #     get_minecraft_embed = Embed(
+    #         title='Bridge api',
+    #         color=colour()
+    #     )
+    #     get_minecraft_embed.add_field(
+    #         name='Discord',
+    #         value=f'ID: {output["discord"]["id"]}\nName: {output["discord"]["name"]}',
+    #         inline=True
+    #     )
+    #     get_minecraft_embed.add_field(
+    #         name='Minecraft',
+    #         value=f'ID: {output["minecraft"]["id"]}\nName: {output["minecraft"]["name"]}',
+    #         inline=True
+    #     )
+    #     get_minecraft_embed.set_thumbnail(url=member.avatar_url)
+    #     await ctx.send(embed=get_minecraft_embed)
 
     # @command(description='Link your minecraft account with your discord account')
     # async def link_minecraft(self, ctx, *, mc_name):
