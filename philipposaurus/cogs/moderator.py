@@ -1,7 +1,7 @@
-from discord.ext.commands import Cog, command, has_guild_permissions, is_owner
+from discord.ext.commands import Cog, command, has_guild_permissions
 from discord import Embed, Member
 from utils import *
-from sqlalchemy import create_engine, Column, Integer, String, BigInteger
+from sqlalchemy import create_engine, Column, Integer, BigInteger, String
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -35,11 +35,15 @@ class Moderator(Cog):
     @command(description='Warn a member (just for Moderators)')
     @has_guild_permissions(kick_members=True)
     async def warn(self, ctx, member: Member, *, reason):
-        warn = Warn(
-            user_id=member.id,
-            reason=f'{reason}\n'
-        )
-        session.add(warn)
+        warns = session.query(Warn).filter(Warn.user_id == member.id).first()
+        if warns:
+            warns.reason = f'{warns.reason}{reason};'
+        else:
+            warn = Warn(
+                user_id=member.id
+            )
+            warn.reason = f'{reason};'
+            session.add(warn)
         session.commit()
         warn_embed = Embed(
             title='Moderator',
@@ -76,15 +80,26 @@ class Moderator(Cog):
             inline=True
         )
         try:
+            reason = str(warns.reason).replace(";", "\n")
             user_embed.add_field(
                 name='Warns',
-                value=warns.reason,
+                value=f'```{reason}```',
                 inline=False
             )
         except AttributeError:
             pass
         user_embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=user_embed)
+
+    @command(description='Clear many messages')
+    async def clear(self, ctx, amount: int = 10):
+        await ctx.channel.purge(limit=amount + 1)
+        clear_embed = Embed(
+            title='Clear',
+            description=f'{amount} messages has been cleared',
+            color=colour()
+        )
+        await ctx.send(embed=clear_embed, delete_after=10)
 
 
 def setup(client):
