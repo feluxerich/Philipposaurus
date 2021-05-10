@@ -49,8 +49,8 @@ class Settings(Cog):
                 write_config(data)
             else:
                 raise NoUserVoiceFound
-            voice_embed.description = f'The channel `{ctx_voice.channel.name}` was successfully set to the ' \
-                                      f'new-public-channel',
+            voice_embed.description = f'The channel `{str(ctx_voice.channel.name)}` was successfully set to the ' \
+                                      f'new-public-channel'
         elif channel_type.lower() == 'private':
             if ctx_voice := ctx.author.voice:
                 data = return_config()
@@ -61,8 +61,8 @@ class Settings(Cog):
                 write_config(data)
             else:
                 raise NoUserVoiceFound
-            voice_embed.description = f'The channel `{ctx_voice.channel.name}` was successfully set to the ' \
-                                      f'new-private-channel',
+            voice_embed.description = f'The channel `{str(ctx_voice.channel.name)}` was successfully set to the ' \
+                                      f'new-private-channel'
         else:
             voice_embed.description = 'Invalid input'
         await ctx.send(embed=voice_embed)
