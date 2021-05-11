@@ -12,7 +12,7 @@ class Minigames(Cog):
     async def ttt(self, ctx, member: Member):
         timeout_embed = Embed(
             title='Timeout',
-            description='The match request timed out after 60 seconds',
+            description='The match request timed out after 60 seconds or the request was denied',
             color=colour()
         )
         invite_embed = Embed(
