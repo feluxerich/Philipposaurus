@@ -36,6 +36,8 @@ class Minigames(Cog):
                 # Green 🟢
                 player1 = member
                 player2 = ctx.author
+                character1 = 'X'
+                character2 = '0'
                 won = None
                 player_turn = player1
                 tic_tac_toe_embed = Embed(
@@ -56,10 +58,10 @@ class Minigames(Cog):
                     response = await self.client.wait_for('message', check=lambda msg: msg.author == player_turn)
                     if response.content.isdigit() and int(response.content) <= 9 and str(response.content) in fields:
                         if player_turn == player1:
-                            fields[int(response.content) - 1] = 'X'
+                            fields[int(response.content) - 1] = character1
                             player_turn = player2
                         elif player_turn == player2:
-                            fields[int(response.content) - 1] = '0'
+                            fields[int(response.content) - 1] = character2
                             player_turn = player1
                     else:
                         invalid_input_embed = Embed(
@@ -69,24 +71,24 @@ class Minigames(Cog):
                         )
                         await ctx.send(embed=invalid_input_embed, delete_after=10)
                     await response.delete()
-                    if fields[0] == fields[1] and fields[0] == fields[2] and fields[0] == 'X' or \
-                            fields[3] == fields[4] and fields[3] == fields[5] and fields[3] == 'X' or \
-                            fields[6] == fields[7] and fields[6] == fields[8] and fields[6] == 'X' or \
-                            fields[0] == fields[3] and fields[0] == fields[6] and fields[0] == 'X' or \
-                            fields[1] == fields[4] and fields[1] == fields[7] and fields[1] == 'X' or \
-                            fields[2] == fields[5] and fields[2] == fields[8] and fields[2] == 'X' or \
-                            fields[0] == fields[4] and fields[0] == fields[8] and fields[0] == 'X' or \
-                            fields[2] == fields[4] and fields[2] == fields[6] and fields[2] == 'X':
+                    if fields[0] == fields[1] and fields[0] == fields[2] and fields[0] == character1 or \
+                            fields[3] == fields[4] and fields[3] == fields[5] and fields[3] == character1 or \
+                            fields[6] == fields[7] and fields[6] == fields[8] and fields[6] == character1 or \
+                            fields[0] == fields[3] and fields[0] == fields[6] and fields[0] == character1 or \
+                            fields[1] == fields[4] and fields[1] == fields[7] and fields[1] == character1 or \
+                            fields[2] == fields[5] and fields[2] == fields[8] and fields[2] == character1 or \
+                            fields[0] == fields[4] and fields[0] == fields[8] and fields[0] == character1 or \
+                            fields[2] == fields[4] and fields[2] == fields[6] and fields[2] == character1:
                         won = player1
                         continue
-                    if fields[0] == fields[1] and fields[0] == fields[2] and fields[0] == '0' or \
-                            fields[3] == fields[4] and fields[3] == fields[5] and fields[3] == '0' or \
-                            fields[6] == fields[7] and fields[6] == fields[8] and fields[6] == '0' or \
-                            fields[0] == fields[3] and fields[0] == fields[6] and fields[0] == '0' or \
-                            fields[1] == fields[4] and fields[1] == fields[7] and fields[1] == '0' or \
-                            fields[2] == fields[5] and fields[2] == fields[8] and fields[2] == '0' or \
-                            fields[0] == fields[4] and fields[0] == fields[8] and fields[0] == '0' or \
-                            fields[2] == fields[4] and fields[2] == fields[6] and fields[2] == '0':
+                    if fields[0] == fields[1] and fields[0] == fields[2] and fields[0] == character1 or \
+                            fields[3] == fields[4] and fields[3] == fields[5] and fields[3] == character1 or \
+                            fields[6] == fields[7] and fields[6] == fields[8] and fields[6] == character1 or \
+                            fields[0] == fields[3] and fields[0] == fields[6] and fields[0] == character1 or \
+                            fields[1] == fields[4] and fields[1] == fields[7] and fields[1] == character1 or \
+                            fields[2] == fields[5] and fields[2] == fields[8] and fields[2] == character1 or \
+                            fields[0] == fields[4] and fields[0] == fields[8] and fields[0] == character1 or \
+                            fields[2] == fields[4] and fields[2] == fields[6] and fields[2] == character1:
                         won = player2
                         continue
                     if is_num(fields) is False:

@@ -123,7 +123,7 @@ async def on_command_error(ctx, error):
         error_embed.description = f'Missing required Argument: `{str(error).split()[0]}`'
     elif isinstance(error, CommandNotFound):
         error = str(error).split()[1].strip('"')
-        error_embed.description = f'Command not found: `{error}'
+        error_embed.description = f'Command not found: `{error}`'
     elif isinstance(error, CommandOnCooldown):
         error_embed.description = 'This Command is still on a cooldown'
     elif isinstance(error, NotOwner):
@@ -142,7 +142,7 @@ async def on_command_error(ctx, error):
 for file in listdir('./cogs'):
     if file.endswith('.py'):
         try:
-            client.reload_extension(f'cogs.{file[:-3]}')
+            client.load_extension(f'cogs.{file[:-3]}')
             print(f'Loaded {file}')
         except ExtensionNotLoaded:
             print(f'Not a python file: {file}')
