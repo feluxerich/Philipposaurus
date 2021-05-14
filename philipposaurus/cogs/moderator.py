@@ -4,11 +4,10 @@ from utils import *
 from sqlalchemy import create_engine, Column, Integer, BigInteger, String
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-
-data = return_config()
+from os import getenv
 
 engine = create_engine(
-    f'postgresql://{data["database"]["username"]}:{data["database"]["password"]}@postgres_db:5432/philipposaurus',
+    f'postgresql://{getenv("POSTGRES_USERNAME")}:{getenv("POSTGRES_PASSWORD")}@postgres_db:5432/philipposaurus',
     echo=False
 )
 Session = sessionmaker(bind=engine)

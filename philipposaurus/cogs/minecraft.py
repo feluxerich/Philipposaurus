@@ -4,12 +4,12 @@ from requests import get
 from base64 import b64decode
 from utils import *
 from aiohttp import ClientSession
+from os import getenv
 
 
 class Minecraft(Cog):
     def __init__(self, client):
         self.client = client
-        self.data = return_config()
 
     @command(description='Grab a skin from a minecraft user. This commands sends then an embed with a picture and'
                          'the link to the skin')
@@ -29,7 +29,7 @@ class Minecraft(Cog):
     @command(description='This commands returns the stats of an user on hypixel')
     async def hypixel(self, ctx, *, mc_name):
         uuid = get(f'https://api.mojang.com/users/profiles/minecraft/{mc_name}').json()
-        api_key = self.data['api_keys']['hypixel']
+        api_key = getenv('HYPIXEL_API_KEY')
         if uuid:
             params = {
                 "key": str(api_key),
@@ -109,7 +109,7 @@ class Minecraft(Cog):
 
     # @command(description='Get the minecraft account of a discord user')
     # async def get_minecraft(self, ctx, member: Member):
-    #     url = f'{self.data["api_keys"]["bridge_api"]}/accounts/discord/{int(member.id)}'
+    #     url = f'{getenv("BRIDGE_API_URL")}accounts/discord/{int(member.id)}'
     #     async with ClientSession() as session:
     #         async with await session.get(url) as response:
     #             output = await response.json()
@@ -132,7 +132,7 @@ class Minecraft(Cog):
 
     # @command(description='Link your minecraft account with your discord account')
     # async def link_minecraft(self, ctx, *, mc_name):
-    #     url = f'{self.data["api_keys"]["bridge_api"]}/accounts'
+    #     url = f'{getenv("BRIDGE_API_URL")}accounts'
     #     uuid = f'https://api.mojang.com/users/profiles/minecraft/{mc_name}'
     #     async with ClientSession() as session:
     #         async with await session.get(uuid) as uuid_resp:

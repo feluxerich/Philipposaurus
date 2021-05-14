@@ -7,3 +7,4 @@ philipposaurus/cogs/__pycache__
 todo.txt
 /database
 /api/configs.json
+/philipposaurus.env

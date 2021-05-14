@@ -5,8 +5,9 @@ services:
     hostname: main_bot
     build: .
     restart: always
-#    depends_on:
-#      - api
+    env_file: philipposaurus.env
+    depends_on:
+      - api
     networks:
       - database
     volumes:

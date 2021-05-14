@@ -2,16 +2,16 @@ from discord.ext.commands import Cog, command
 from discord import Embed
 from requests import get
 from utils import *
+from os import getenv
 
 
 class Osu(Cog):
     def __init__(self, client):
         self.client = client
-        self.data = return_config()
 
     @command(description='With this command you can get the statistics of a osu player')
     async def osustats(self, ctx, player_name):
-        osu_resp = get(f'https://osu.ppy.sh/api/get_user?u={player_name}&k={self.data["api_keys"]["osu"]}').json()[0]
+        osu_resp = get(f'https://osu.ppy.sh/api/get_user?u={player_name}&k={getenv("OSU_API_KEY")}').json()[0]
         osu_stats_embed = Embed(
             title='Osu Stats',
             color=colour()
