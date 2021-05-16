@@ -91,6 +91,7 @@ class Moderator(Cog):
         await ctx.send(embed=user_embed)
 
     @command(description='Clear many messages')
+    @has_guild_permissions(manage_messages=True)
     async def clear(self, ctx, amount: int = 10):
         await ctx.channel.purge(limit=amount + 1)
         clear_embed = Embed(
