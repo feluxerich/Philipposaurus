@@ -12,15 +12,21 @@ services:
       - database
     volumes:
       - ./philipposaurus:/philipposaurus
-#  api:
-#    container_name: bridge-api
-#    hostname: api
-#    image: bridge-api
-#    restart: always
-#    ports:
-#      - 8000:8000
-#    networks:
-#      - database
+  api:
+    container_name: bridge-api
+    hostname: api
+    image: bridge-api
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.srv_homepage.loadbalancer.server.port=8000"
+      - "traefik.http.routers.r_homepage.rule=Host(`api.poweredbyfluxi.ml`)"
+      - "traefik.http.routers.r_homepage.entrypoints=websecure"
+      - "traefik.http.routers.r_homepage.tls=true"
+      - "traefik.http.routers.r_homepage.tls.certresolver=myresolver"
+    networks:
+      - database
+      - proxy
 networks:
   default:
     external:
@@ -28,3 +34,6 @@ networks:
   database:
     external:
       name: database
+  proxy:
+    external:
+      name: proxy
