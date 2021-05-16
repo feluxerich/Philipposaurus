@@ -16,6 +16,7 @@ from discord.ext.commands import (
 from os import listdir
 from discord import Embed, Intents, Game, Status
 from asyncio import sleep
+from os import getenv
 
 client = Bot(
     command_prefix=when_mentioned_or('.'),
@@ -150,4 +151,4 @@ for file in listdir('./cogs'):
         print(f'Not a python file: {file}')
 
 if __name__ == '__main__':
-    client.run(data['token'])
+    client.run(getenv('BOT_TOKEN'))
