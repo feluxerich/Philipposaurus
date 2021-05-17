@@ -17,8 +17,9 @@
    POSTGRES_PASSWORD=postgres
    ```
 2. Make some docker stuff
-    - Create a Docker-network named `database`
+    - Create a Docker-network named `main` and `database`
       ```bash
+      docker network create --subnet 192.168.0.0/24 main
       docker network create --subnet 192.168.1.0/24 database
       ```
     - Remove the api section and the depends_on section. Your `docker-compose.yml` should now look like this:
@@ -65,4 +66,19 @@
    ```bash
    docker-compose up -d --build
    ```
-   Congratulations, now you have you own instance of the philipposaurus bot.
+   Congratulations, now you have you own instance of the philipposaurus bot. Now 
+   we are going to do some discord specific things...
+
+---
+
+1. First we have to set some channels like the `reaction_role`-Channel
+   ```bash
+   .set text <role|rule> <channel>
+   # To use this command for voice channels you have to be connected to the channel you want to set
+   .set voice <public|private>
+   ```
+2. After this we set some reaction roles
+   ```bash
+   .set reaction <add|remove> <rule|role> <emoji> <role>
+   ```
+   Then your bot is running and also has some settings
