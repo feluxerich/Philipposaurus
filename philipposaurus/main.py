@@ -1,8 +1,22 @@
 from utils import *
-from discord.ext.commands import Bot, when_mentioned_or
+from discord.ext.commands import (
+    Bot,
+    when_mentioned_or,
+    ExtensionNotLoaded,
+    MissingPermissions,
+    MissingRequiredArgument,
+    CommandNotFound,
+    CommandOnCooldown,
+    NotOwner,
+    BadBoolArgument,
+    NSFWChannelRequired,
+    NoPrivateMessage,
+    BotMissingPermissions
+)
 from os import listdir
 from discord import Embed, Intents, Game, Status
 from asyncio import sleep
+from os import getenv
 
 client = Bot(
     command_prefix=when_mentioned_or('.'),
@@ -81,10 +95,13 @@ async def reload(ctx):
     failed = str()
     for file in listdir('./cogs'):
         if file.endswith('.py'):
-            client.reload_extension(f'cogs.{file[:-3]}')
-            successful += f'Loaded `{file}`\n'
+            try:
+                client.reload_extension(f'cogs.{file[:-3]}')
+                successful += f'Loaded `{file}`\n'
+            except ExtensionNotLoaded:
+                failed += f'Not a python file: `{file}`\n'
         else:
-            failed += f'Not a python file: `{file}`'
+            failed += f'Not a python file: `{file}`\n'
     reload_embed = Embed(
         title='Reload',
         color=colour()
@@ -98,18 +115,40 @@ async def reload(ctx):
 async def on_command_error(ctx, error):
     error_embed = Embed(
         title='Error',
-        description=str(error),
         color=0xff0000
     )
+    error_embed.description = str(error)
+    if isinstance(error, MissingPermissions):
+        error_embed.description = 'You do not have the permissions to run this command'
+    elif isinstance(error, MissingRequiredArgument):
+        error_embed.description = f'Missing required Argument: `{str(error).split()[0]}`'
+    elif isinstance(error, CommandNotFound):
+        error = str(error).split()[1].strip('"')
+        error_embed.description = f'Command not found: `{error}`'
+    elif isinstance(error, CommandOnCooldown):
+        error_embed.description = 'This Command is still on a cooldown'
+    elif isinstance(error, NotOwner):
+        error_embed.description = 'You can not run this command because you are not the owner of this bot'
+    elif isinstance(error, BadBoolArgument):
+        error_embed.description = 'Your given argument can not be converted to a boolean datatype'
+    elif isinstance(error, NSFWChannelRequired):
+        error_embed.description = 'This command is only for use in NSFW Channels'
+    elif isinstance(error, NoPrivateMessage):
+        error_embed.description = 'The user is not accepting private messages from guild members'
+    elif isinstance(error, BotMissingPermissions):
+        error_embed.description = 'The user is not accepting private messages from guild members'
     await ctx.send(embed=error_embed)
 
 
 for file in listdir('./cogs'):
     if file.endswith('.py'):
-        client.load_extension(f'cogs.{file[:-3]}')
-        print(f'Loaded {file}')
+        try:
+            client.load_extension(f'cogs.{file[:-3]}')
+            print(f'Loaded {file}')
+        except ExtensionNotLoaded:
+            print(f'Not a python file: {file}')
     else:
         print(f'Not a python file: {file}')
 
 if __name__ == '__main__':
-    client.run(data['token'])
+    client.run(getenv('BOT_TOKEN'))

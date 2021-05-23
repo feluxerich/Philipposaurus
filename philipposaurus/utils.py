@@ -3,6 +3,7 @@ from errors import *
 from os.path import isfile
 from discord import Role, Guild
 from random import choice
+from typing import Iterable
 
 
 def is_config(function):
@@ -120,3 +121,11 @@ colours = [
 
 def colour():
     return choice(colours)
+
+
+def is_num(iterable: Iterable):
+    for item in iterable:
+        if str(item).isdigit() and int(item) != 0:
+            return True
+        continue
+    return False

@@ -4,12 +4,13 @@ from requests import get
 from base64 import b64decode
 from utils import *
 from aiohttp import ClientSession
+from os import getenv
+from datetime import datetime
 
 
 class Minecraft(Cog):
     def __init__(self, client):
         self.client = client
-        self.data = return_config()
 
     @command(description='Grab a skin from a minecraft user. This commands sends then an embed with a picture and'
                          'the link to the skin')
@@ -29,7 +30,7 @@ class Minecraft(Cog):
     @command(description='This commands returns the stats of an user on hypixel')
     async def hypixel(self, ctx, *, mc_name):
         uuid = get(f'https://api.mojang.com/users/profiles/minecraft/{mc_name}').json()
-        api_key = self.data['api_keys']['hypixel']
+        api_key = getenv('HYPIXEL_API_KEY')
         if uuid:
             params = {
                 "key": str(api_key),
@@ -99,7 +100,8 @@ class Minecraft(Cog):
                 if 'changedToAt' not in name:
                     names += f'**{name["name"]}** - created\n'
                     continue
-                names += f'**{name["name"]}**\n'
+                names += f'**{name["name"]}** - ' \
+                         f'{datetime.fromtimestamp(name.get("changedToAt")/1000).strftime("%d.%m.%Y %H:%M:%S")}\n'
             name_history_embed = Embed(
                 title='Minecraft Name History',
                 description=names,
@@ -107,9 +109,9 @@ class Minecraft(Cog):
             )
             await ctx.send(embed=name_history_embed)
 
-    @command(description='Get the minecraft account of a discord account if this user linked his account with the bot')
+    @command(description='Get the minecraft account of a discord user')
     async def get_minecraft(self, ctx, member: Member):
-        url = f'{self.data["api_keys"]["bridge_api"]}/accounts/discord/{int(member.id)}'
+        url = f'{getenv("BRIDGE_API_URL")}accounts/discord/{int(member.id)}'
         async with ClientSession() as session:
             async with await session.get(url) as response:
                 output = await response.json()
@@ -130,30 +132,30 @@ class Minecraft(Cog):
         get_minecraft_embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=get_minecraft_embed)
 
-    # @command(description='Link your minecraft account with your discord account')
-    # async def link_minecraft(self, ctx, *, mc_name):
-    #     url = f'{self.data["api_keys"]["bridge_api"]}/accounts'
-    #     uuid = f'https://api.mojang.com/users/profiles/minecraft/{mc_name}'
-    #     async with ClientSession() as session:
-    #         async with await session.get(uuid) as uuid_resp:
-    #             uuid_resp = await uuid_resp.json()
-    #             data = {
-    #                 "discord_id": str(ctx.author.id),
-    #                 "discord_name": str(ctx.author.name),
-    #                 "minecraft_id": str(uuid_resp["id"]),
-    #                 "minecraft_name": str(uuid_resp["name"])
-    #             }
-    #         async with await session.post(url, json=data) as response:
-    #             output = await response.json()
-    #     get_minecraft_embed = Embed(
-    #         title='Bridge api',
-    #         color=colour()
-    #     )
-    #     get_minecraft_embed.add_field(
-    #         name='Response',
-    #         value=str(output['message'])
-    #     )
-    #     await ctx.send(embed=get_minecraft_embed)
+    @command(description='Link your minecraft account with your discord account')
+    async def link_minecraft(self, ctx, *, mc_name):
+        url = f'{getenv("BRIDGE_API_URL")}accounts'
+        uuid = f'https://api.mojang.com/users/profiles/minecraft/{mc_name}'
+        async with ClientSession() as session:
+            async with await session.get(uuid) as uuid_resp:
+                uuid_resp = await uuid_resp.json()
+                data = {
+                    "discord_id": ctx.author.id,
+                    "discord_name": str(ctx.author.name),
+                    "minecraft_id": str(uuid_resp["id"]),
+                    "minecraft_name": str(uuid_resp["name"])
+                }
+            async with await session.post(url, json=data) as response:
+                output = await response.json()
+        get_minecraft_embed = Embed(
+            title='Bridge api',
+            color=colour()
+        )
+        get_minecraft_embed.add_field(
+            name='Response',
+            value=str(output['message'])
+        )
+        await ctx.send(embed=get_minecraft_embed)
 
 
 def setup(client):
